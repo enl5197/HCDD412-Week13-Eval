@@ -92,7 +92,6 @@ def summarize(results, prompt_version):
     }
 
 
-
 def regression_gate(baseline, current):
     """Compare baseline and current reports for case-level regressions."""
 
