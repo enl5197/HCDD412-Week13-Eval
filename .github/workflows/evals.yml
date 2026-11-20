@@ -62,4 +62,4 @@ jobs:
           flake8 --max-line-length 100
 
           # Run evaluations against the saved baseline.
-          python evals/run_evals.py --baseline report-v2.json
+          python evals/run_evals.py --prompt-version v2 --baseline report-v2.json
