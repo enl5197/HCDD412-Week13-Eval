@@ -92,17 +92,37 @@ def summarize(results, prompt_version):
     }
 
 
-def regression_gate(baseline, current):
-    """PART 3 OF THE LAB -- YOU IMPLEMENT THIS.
 
-    Compare two report dicts (the saved baseline and the current run) and return a list of
-    human-readable problems. Return an empty list when the change is safe to ship.
-    Suggested rules to consider (pick and justify your own):
-      - any case that PASSED in the baseline but FAILS now is a regression
-      - pass rate must not drop
-      - average latency or total tokens must not grow by more than some percentage
-    """
-    return []  # TODO: replace with your gate logic
+def regression_gate(baseline, current):
+    """Compare baseline and current reports for case-level regressions."""
+
+    problems = []
+
+    # Index results by case ID so we can compare matching cases.
+    baseline_results = {
+        result["id"]: result for result in baseline.get("results", [])
+    }
+    current_results = {
+        result["id"]: result for result in current.get("results", [])
+    }
+
+    for case_id, baseline_result in baseline_results.items():
+
+        if baseline_result.get("passed") is True:
+
+            if case_id not in current_results:
+                problems.append(
+                    f"Regression: '{case_id}' passed in the baseline "
+                    "but is missing from the current run."
+                )
+
+            elif current_results[case_id].get("passed") is not True:
+                problems.append(
+                    f"Regression: '{case_id}' passed in the baseline "
+                    "but failed in the current run."
+                )
+
+    return problems
 
 
 def main():
